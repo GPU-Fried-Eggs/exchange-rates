@@ -2,6 +2,7 @@
   "name": "exchange_rates",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://gpu-fried-eggs.github.io/exchange_rates",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -9,8 +10,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "react-select": "latest",
-    "recharts": "latest",
+    "react-select": "^5.4.0",
+    "recharts": "^2.1.14",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -36,5 +37,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "^d3-(.*)$": "d3-$1/dist/d3-$1"
+    }
   }
 }
