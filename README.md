@@ -3,6 +3,9 @@
 Try to reimplement the google suggestion plugin style exchange rate tool.
 ![img.png](docs/sample.png)
 
+Our Demo
+![img.png](docs/img.png)
+
 ## Available Scripts
 
 In the project directory, you can run:
