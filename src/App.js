@@ -66,7 +66,7 @@ function App() {
         <form onSubmit={convert}>
           <label>Current exchange Rate: <output>{rate.toFixed(2)}</output></label>
           <div className="container">
-            <input type="number" step="0.01" value={base} onChange={setBase}/>
+            <input type="number" step="0.01" value={base} onChange={event => setBase(event.target.value)}/>
             <Select styles={selectStyle} defaultValue={baseName} onChange={setBaseName} options={countries}/>
           </div>
           <div className="container">
