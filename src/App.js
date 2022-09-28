@@ -1,7 +1,7 @@
 import './App.css';
 import Select from "react-select";
-import {useEffect, useState} from "react";
-import {Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis} from "recharts";
+import { useEffect, useState } from "react";
+import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
 
 const apiUrl = new URL("https://api.exchangerate.host");
 const codes = ["AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN", "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB", "BRL", "BSD", "BTC", "BTN", "BWP", "BYN", "BZD", "CAD", "CDF", "CHF", "CLF", "CLP", "CNH", "CNY", "COP", "CRC", "CUC", "CUP", "CVE", "CZK", "DJF", "DKK", "DOP", "DZD", "EGP", "ERN", "ETB", "EUR", "FJD", "FKP", "GBP", "GEL", "GGP", "GHS", "GIP", "GMD", "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK", "HTG", "HUF", "IDR", "ILS", "IMP", "INR", "IQD", "IRR", "ISK", "JEP", "JMD", "JOD", "JPY", "KES", "KGS", "KHR", "KMF", "KPW", "KRW", "KWD", "KYD", "KZT", "LAK", "LBP", "LKR", "LRD", "LSL", "LYD", "MAD", "MDL", "MGA", "MKD", "MMK", "MNT", "MOP", "MRU", "MUR", "MVR", "MWK", "MXN", "MYR", "MZN", "NAD", "NGN", "NIO", "NOK", "NPR", "NZD", "OMR", "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG", "QAR", "RON", "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SDG", "SEK", "SGD", "SHP", "SLL", "SOS", "SRD", "SSP", "STD", "STN", "SVC", "SYP", "SZL", "THB", "TJS", "TMT", "TND", "TOP", "TRY", "TTD", "TWD", "TZS", "UAH", "UGX", "USD", "UYU", "UZS", "VES", "VND", "VUV", "WST", "XAF", "XAG", "XAU", "XCD", "XDR", "XOF", "XPD", "XPF", "XPT", "YER", "ZAR", "ZMW", "ZWL"];
@@ -10,14 +10,8 @@ let timeRange = [Date.now() - (1000 * 60 * 60 * 24 * 15) /* half month*/, Date.n
 codes.forEach((value, index) => countries.push({"value": index, "label": value}));
 
 const selectStyle = {
-    container: provided => ({
-        ...provided,
-        width: 130
-    }),
-    control: (provided, state) => ({
-        ...provided,
-        borderRadius: "0 4px 4px 0"
-    })
+    container: provided => ({ ...provided, width: 130 }),
+    control: (provided, state) => ({ ...provided, borderRadius: "0 4px 4px 0" })
 }
 
 function App() {
@@ -27,10 +21,6 @@ function App() {
     const [targetName, setTargetName] = useState(countries[codes.indexOf("GBP")]);
     const [rate, setRate] = useState(0);
     const [chartData, setChartData] = useState([])
-
-    useEffect(() => {
-        void async function() { await convert() }();
-    }, []); // first render
 
     async function convert(event) {
         event?.preventDefault();
@@ -56,12 +46,20 @@ function App() {
             if (responseSeries.ok) {
                 const json = await responseSeries.json(), rawData = [];
                 for (const [key, value] of Object.entries(json["rates"]))
-                    rawData.push({ date: key, rate: Object.values(value)[0] });
+                    rawData.push({
+                        date: new Date(key).toLocaleDateString(navigator.language, { month: "short", day: "numeric" }),
+                        rate: Object.values(value)[0]
+                    });
                 console.log(rawData);
                 setChartData(rawData);
             } else alert("Can not get latest data");
         } catch(err) { alert(err); }
     }
+
+    useEffect(() => {
+        void async function() { await convert() }();
+    // eslint-disable-next-line
+    }, []);
 
     return (
       <div className="App">
@@ -86,8 +84,8 @@ function App() {
               <stop offset="95%" stopColor="#82ca9d" stopOpacity={0}/>
             </linearGradient>
           </defs>
-          <XAxis dataKey="date" />
-          <YAxis />
+          <XAxis dataKey="date"/>
+          <YAxis type="number" domain={["auto", "auto"]}/>
           <CartesianGrid strokeDasharray="3 3" />
           <Tooltip />
           <Area type="monotone" dataKey="rate" stroke="#82ca9d" fillOpacity={1} fill="url(#colorUv)" />
