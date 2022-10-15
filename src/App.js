@@ -34,14 +34,17 @@ function App() {
                 const rate = json["rates"][targetName.label];
                 setRate(rate);
                 setTarget(base * rate);
+                console.log(`get latest time: ${current}, calculate range ${timeRange[0]} - ${timeRange[1]}, rate: ${rate}`);
             } else alert("Can not get latest data");
             // draw the graph consider do incremental fetch.
             const url = new URL("timeseries?", apiUrl), params = url.searchParams;
             let [start, end] = [new Date(timeRange[0]), new Date(timeRange[1])];
-            params.set("start_date", `${start.getFullYear()}-${start.getMonth()}-${start.getDate()}`);
-            params.set("end_date", `${end.getFullYear()}-${end.getMonth()}-${end.getDate()}`)
+            const normalize = data => data < 10 ? `0${data}` : data;
+            params.set("start_date", `${start.getFullYear()}-${normalize(start.getMonth())}-${normalize(start.getDate())}`);
+            params.set("end_date", `${end.getFullYear()}-${normalize(end.getMonth())}-${normalize(end.getDate())}`)
             params.set("base", baseName.label);
             params.set("symbols", targetName.label);
+            console.log(`phrase api request ${url}`);
             const responseSeries = await fetch(url);
             if (responseSeries.ok) {
                 const json = await responseSeries.json(), rawData = [];
@@ -50,7 +53,7 @@ function App() {
                         date: new Date(key).toLocaleDateString(navigator.language, { month: "short", day: "numeric" }),
                         rate: Object.values(value)[0]
                     });
-                console.log(rawData);
+                console.log(`get data from api: ${rawData}`);
                 setChartData(rawData);
             } else alert("Can not get latest data");
         } catch(err) { alert(err); }
